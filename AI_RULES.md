@@ -39,5 +39,5 @@ PR3. Stop at the CHECKPOINT. Do not continue into another task or make unrequest
 PR4. End with the A2 Report format: plan followed, changed files, commands/steps run, Verified (how), NOT verified, rules touched, open questions.
 
 [BRAND — BR]
-BR1. Brand: name "<name>", accent color <hex>, font <font>, logo file <path or "none yet">. Applies only to scanner page header + page title, email template header, and Form theme; QR image stays plain (no logo overlay); no lockups and no app icons.
+BR1. Brand: name "Tap In", accent color #4F46E5, font Montserrat, logo file "none yet". Applies only to scanner page header + page title, email template header, and Form theme; QR image stays plain (no logo overlay); no lockups and no app icons.
 ```
