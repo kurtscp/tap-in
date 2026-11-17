@@ -37,4 +37,7 @@ PR1. Plan first: state your plan, then wait for the go-ahead before editing file
 PR2. Edit only the files in OWNED FILES, and only within the scope of your one task.
 PR3. Stop at the CHECKPOINT. Do not continue into another task or make unrequested changes.
 PR4. End with the A2 Report format: plan followed, changed files, commands/steps run, Verified (how), NOT verified, rules touched, open questions.
+
+[BRAND — BR]
+BR1. Brand: name "<name>", accent color <hex>, font <font>, logo file <path or "none yet">. Applies only to scanner page header + page title, email template header, and Form theme; QR image stays plain (no logo overlay); no lockups and no app icons.
 ```
