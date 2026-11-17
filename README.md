@@ -40,6 +40,8 @@ No paid services. The pipeline is:
 
 The **project owner** is a separate role: they own the Form, Sheet, Apps Script, and the dummy Gmail account, and they configure the shared settings. Members are Editors on the files, not owners.
 
+> **Setup status:** the project owner has already created the Form and the `Registrations` Sheet, bound the Apps Script project, set `SCANNER_PIN`, verified the dummy Gmail alias, and shared the QR Drive folder. Members must **not** recreate these — work inside them. The owner installs the `onFormSubmit` trigger after the backend merge and deploys the web app after the scanner merge.
+
 **Setup steps**
 
 1. **Clone the repo** — `git clone <repo-url>` and then `cd tap-in`. Replace `<repo-url>` with the real URL the lead gives you.
