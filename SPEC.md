@@ -236,21 +236,21 @@ Settings: `SCANNER_PIN` (Apps Script → Project Settings → Script Properties)
 
 | Member | Role | Owns | Hands off |
 |---|---|---|---|
-| Member 1 | Registration Form | `/form` | Form + linked Sheet with the 10 headers; Sheet ID and field-order note → Member 2 |
-| Member 2 | Backend: ID + QR | `/backend` | Config.gs, Code.gs, QR library; function contract and trigger setup → Member 3 |
-| Member 3 | Email | `/email` | Email.gs, template.html; `sendTicketEmail` contract → Member 4 |
-| Member 4 | Scanner | `/scanner` | index.html, doGet.gs snippet → Member 5 |
+| Member 1 | Registration Form | `/form` | Form questions + field-order/Sheet-ID note (the Form and Sheet already exist, owner-created) → Member 2 |
+| Member 2 | Backend: ID + QR | `/backend` | Config.gs, Code.gs, QR library; `onFormSubmit` function and function contract → Member 3. The owner installs the trigger after merge. |
+| Member 3 | Email | `/email` | Email.gs, template.html; `sendTicketEmail` contract and confirmed alias → Member 4 |
+| Member 4 | Scanner | `/scanner` | index.html, doGet.gs snippet + deployment settings note → Member 5. The owner deploys the web app after merge. |
 | Member 5 | Lead/QA | `/docs` | Merged files, TEST_LOG.md, GO_NO_GO.md, handoff notes; final go/no-go |
-| Project owner | Setup/configuration (separate role) | Form, Sheet, Script, dummy Gmail, Script Properties, triggers, deployment, Drive sharing | Configured environment to the team |
+| Project owner | Setup/configuration (separate role) | Form, Sheet, Script container, dummy Gmail, Script Properties (`SCANNER_PIN`), Gmail alias, QR Drive folder; installs trigger and deploys web app after merges | Configured environment to the team |
 
 ### Workflow (gates)
 
 | Stage | Work mode | Gate to proceed |
 |---|---|---|
-| Setup | Owner only | Sheet tab, Editors, Script Properties, trigger, deployment, Drive sharing, Gmail alias all in place. |
-| Tasks 1-4 | Parallel — each member in their own folder/branch | Each stage test (S1-S4) passes and the Z3 handoff note + A2 Report are written. |
-| Merge | Sequential, lead only, in order Form → Backend → Email → Scanner → QA | Each PR reviewed (Z2) and approved before the next merge. |
-| QA | Member 5 after all merges | E2E test (Appendix C) passes; TEST_LOG.md and GO_NO_GO.md written. |
+| Setup (Phase 0 — owner, before tasks) | Owner only | Form ("Tap In Registration"), Sheet tab `Registrations` with the 10 headers, Script container, Editors, `SCANNER_PIN` in Script Properties, verified Gmail alias, and shared QR Drive folder all in place. |
+| Tasks 1-4 | Parallel — each member in their own folder/branch | Each stage test (S1-S4) passes and the Z3 handoff note + A2 Report are written. Members do not create the Form, Sheet, Script, Gmail alias, or Drive folder — the owner already did. |
+| Merge + Phase 2 setup | Sequential, lead only, in order Form → Backend → Email → Scanner → QA. Owner installs the `onFormSubmit` trigger after the backend merge and deploys the web app (Execute as: Me, Anyone) after the scanner merge. | Each PR reviewed (Z2) and approved before the next merge; trigger install and web app URL confirmed present before QA. Triggers and deployments run as the person who performs them, so the owner must do both. |
+| QA | Member 5 after all merges and Phase 2 setup | E2E test (Appendix C) passes; TEST_LOG.md and GO_NO_GO.md written. |
 | Go/No-go | Lead decision | GO_NO_GO.md states the decision; no BLOCKER findings open. |
 
 ### Git rules
