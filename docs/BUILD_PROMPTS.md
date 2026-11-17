@@ -16,6 +16,8 @@ One guardrail block and one self-contained task prompt per team member. Copy onl
 6. The prompt ends at a **CHECKPOINT** — the AI stops and sends the A2 Report. Do not let it continue into other tasks.
 7. Write the Z3 handoff note, commit your branch, push it, and open a PR to `main` (see README.md for the exact commands).
 
+> **Already set up by the project owner:** the Form ("Tap In Registration"), the `Registrations` Sheet with its 10 headers, the Apps Script project bound to that Sheet, the `SCANNER_PIN` in Script Properties, the verified Gmail "Send as" alias, and the shared QR Drive folder. Do **not** create or reconfigure any of these in your task — work inside them. The owner installs the `onFormSubmit` trigger and deploys the web app after the code is merged.
+
 **Prompt map**
 
 | Task | Owner | Folder | Prompts |
@@ -107,12 +109,14 @@ The canonical table is in `OWNERS.md`; this is the same map.
 
 | Area | Owner | Others may edit? |
 |---|---|---|
-| `/form` — Form questions, field IDs, setup notes | Member 1 | No |
+| `/form` — Form questions and setup notes (the Form itself already exists) | Member 1 | No |
 | `/backend` — Config.gs, Code.gs, QR library | Member 2 | No |
 | `/email` — Email.gs, template.html | Member 3 | No |
 | `/scanner` — index.html, doGet.gs snippet | Member 4 | No |
 | `/docs` — SPEC.md, prompts, test log, go/no-go | Member 5 (Lead/QA) | No |
-| Form, Sheet, Script, dummy Gmail, Script Properties, triggers, deployment, Drive sharing | Project owner | No — Members are Editors on files only; only the owner configures settings |
+| Form, Sheet, Script container, dummy Gmail, Script Properties (`SCANNER_PIN`), Gmail alias, QR Drive folder | Project owner | No — Members are Editors on files only; only the owner configures settings |
+| `onFormSubmit` trigger install (after Member 2's code is merged) | Project owner | No — installable triggers run as the installer |
+| Web app deployment (after Member 4's code is merged) | Project owner | No — "Execute as: Me" must be the owner |
 | `main` branch merges | Member 5 (Lead/QA) | No — members push branches and open PRs |
 
 ---
@@ -127,7 +131,7 @@ Each prompt is self-contained: paste A1 first, then one block below.
 
 ```text
 TASK
-You are Member 1, the Registration Form builder. Goal: collect registrations into the shared Sheet. Build only the Form and its linked Sheet.
+You are Member 1, the Registration Form builder. Goal: configure the questions in the Form that already exists. The Form and its linked Sheet were created by the project owner — do not create them.
 
 OWNED FILES
 /form/README.md only. Do not create or edit any other file.
@@ -139,18 +143,18 @@ AttendeeID: Utilities.getUuid(), lowercase, hyphens removed, plain text in colum
 QR contains ONLY the AttendeeID. No paid services. Nobody changes the columns or the QR format.
 
 STEPS (beginner — where to click)
-1. Go to forms.google.com -> Blank form. Title it "Tap In Registration".
+1. Open the existing Form titled "Tap In Registration" (owned by the project owner; you are an Editor). Do not create a new Form.
 2. Add questions in this exact order: FullName (Short answer, required), Email (Email, required), Organization (Short answer, required), Contact (Short answer, optional).
-3. Click the green Sheets icon (Responses) -> Create a new spreadsheet. Rename the bottom tab to "Registrations".
-4. In row 1 type the 10 headers exactly as in the CONTRACT, A through J. Leave F-J empty below row 1.
+3. In Responses, confirm the Form is linked to the project owner's existing spreadsheet — do NOT click "Create a new spreadsheet". If it is not linked, use the green Sheets icon -> "Select existing spreadsheet" and choose the owner's Sheet.
+4. Confirm the Sheet's bottom tab is "Registrations" and row 1 already has the 10 headers A-J. Do not retype or change them. Leave F-J empty below row 1.
 5. Write /form/README.md: a short setup note listing the field order and the Sheet ID for teammates, plus a plain list of the 10 headers.
 If you are not sure about any step or setting, say "I'm not sure" — never invent a function name, setting, or column.
 
 CONSTRAINTS
-Build: the Form and its linked Sheet only. Do NOT build: Apps Script, ID generation, QR, email, scanner, or anything in columns F-J below row 1. No secrets, no real attendee data in files.
+Own: the Form's questions and your setup note. Do NOT create the Form, Sheet, Script, Gmail alias, Drive folder, trigger, or deployment — the project owner already did those. Do not build Apps Script, ID generation, QR, email, scanner, or anything in columns F-J below row 1. No secrets, no real attendee data in files.
 
 VERIFY
-Submit a test registration. Confirm one new row with Timestamp in A and the four form fields in B-E, and F-J empty. Confirm the question order and required/optional settings.
+Submit a test registration. Confirm one new row in the owner's Sheet with Timestamp in A and the four form fields in B-E, and F-J empty. Confirm the question order and required/optional settings.
 
 CHECKPOINT
 Stop, then send the A2 Report. Do not continue to another task.
@@ -162,7 +166,7 @@ Stop, then send the A2 Report. Do not continue to another task.
 
 ```text
 TASK
-You are Member 2, the Backend builder. Goal: give each new registration a secret ID and a QR image. Build the Apps Script bound to the Sheet.
+You are Member 2, the Backend builder. Goal: give each new registration a secret ID and a QR image. Write the Apps Script source files in the Script project the project owner already created and bound to the Sheet.
 
 OWNED FILES
 /backend/Config.gs, /backend/Code.gs, and the QR library source file in /backend (name it). Do not create or edit any other file.
@@ -174,24 +178,24 @@ AttendeeID: Utilities.getUuid(), lowercase, hyphens removed, plain text in colum
 QR contains ONLY the AttendeeID. No paid services. Nobody changes the columns or the QR format.
 
 STEPS (beginner — where to click)
-1. In the Sheet click Extensions -> Apps Script. Create files Config.gs and Code.gs.
-2. In Config.gs set SHEET_NAME="Registrations", EVENT_TIMEZONE to the event's local zone, DRIVE_FOLDER_ID to a new folder you create in Drive, and SENDER_ALIAS="PASTE_LATER" (the real value belongs to the project owner's Gmail).
-3. Add an installable trigger: clock icon -> Add trigger -> onFormSubmit -> From spreadsheet -> On form submit.
+1. Open the existing Apps Script project from the Sheet: Extensions -> Apps Script. It already exists — do not create a new one. Add files Config.gs and Code.gs in that project.
+2. In Config.gs set SHEET_NAME="Registrations", EVENT_TIMEZONE to the event's local zone, DRIVE_FOLDER_ID to the folder the project owner already created and shared with you, and SENDER_ALIAS="PASTE_LATER" (the real alias is already verified in the owner's Gmail; never hardcode it).
+3. Do NOT add the onFormSubmit trigger. The project owner installs it after your code is merged so it runs as the owner (needed for the Gmail alias and quota). Your job is only to provide the onFormSubmit function in Code.gs.
 4. On submit: make the ID with Utilities.getUuid(), lowercase it, remove hyphens, check column F for a duplicate, write it as text in F.
 5. Make a QR containing ONLY that ID using a small QR library placed in our /backend folder — never a third-party QR website.
-6. Save the QR PNG in the Drive folder, set "Anyone with the link can view", and put the link in G (QRUrl).
+6. Save the QR PNG into the Drive folder whose ID the owner gave you (it is already shared "Anyone with the link can view") and put the link in G (QRUrl). Do not change the folder's sharing.
 7. Call the email builder's function exactly as: sendTicketEmail({to, fullName, attendeeId, qrBlob, qrUrl}) -> {sent, error}. Set H (EmailSent) from its result.
-8. Provide checkIn(id, pin): check PIN against Script Properties key SCANNER_PIN; find the row by F; if I is already true return "already checked in at <time>"; otherwise set I and J only. Never write A-E.
+8. Provide checkIn(id, pin): check PIN against Script Properties key SCANNER_PIN (already set by the owner — read it, never write it into a file); find the row by F; if I is already true return "already checked in at <time>"; otherwise set I and J only. Never write A-E.
 If you are not sure about any step or setting, say "I'm not sure" — never invent a function name, setting, or column.
 
 CONSTRAINTS
-Build: Apps Script that fills F, G, H on submit, plus checkIn(id, pin) for the scanner. Do NOT build: the Form, email text, scanner page, or anything in columns A-E. PIN stays in Script Properties, never in source or URL. No secrets or real attendee data in files.
+Own: the Apps Script source files that fill F, G, H on submit plus checkIn(id, pin). Do NOT create the Sheet, Form, Script container, Gmail alias, SCANNER_PIN property, trigger, web app deployment, or Drive folder — the project owner already did those. Do NOT build: email text, scanner page, or anything in columns A-E. PIN stays in Script Properties, never in source or URL. No secrets or real attendee data in files.
 
 VERIFY
-A test submission gets a unique ID as text in F and a QR image/URL in G. Decode the QR and confirm it equals exactly the AttendeeID. Re-run the trigger and confirm no duplicate row or ID. Confirm A-E are unchanged.
+A test submission gets a unique ID as text in F and a QR image/URL in G. Decode the QR and confirm it equals exactly the AttendeeID. Confirm A-E are unchanged. Re-run the trigger after the owner installs it (post-merge) and confirm no duplicate row or ID — if you cannot yet, list this as NOT verified in your report.
 
 CHECKPOINT
-Stop, then send the A2 Report. In it, list the two function names (sendTicketEmail, checkIn) and explain how to set SCANNER_PIN. Do not continue to another task.
+Stop, then send the A2 Report. In it, list the two function names (sendTicketEmail, checkIn) and confirm SCANNER_PIN is read from Script Properties. Do not continue to another task.
 ```
 
 ## B3 — Member 3: Email (`/email`)
@@ -200,7 +204,7 @@ Stop, then send the A2 Report. In it, list the two function names (sendTicketEma
 
 ```text
 TASK
-You are Member 3, the Email builder. Goal: email each attendee their QR from the dummy Gmail address. Build the email module and HTML template.
+You are Member 3, the Email builder. Goal: email each attendee their QR from the dummy Gmail address. Write the email module and HTML template; the Gmail alias is already verified by the project owner.
 
 OWNED FILES
 /email/Email.gs and /email/template.html. Do not create or edit any other file.
@@ -212,8 +216,8 @@ AttendeeID: Utilities.getUuid(), lowercase, hyphens removed, plain text in colum
 QR contains ONLY the AttendeeID. No paid services. Nobody changes the columns or the QR format.
 
 STEPS (beginner — where to click)
-1. In your own Gmail: gear -> See all settings -> Accounts -> Send mail as -> Add another email address -> enter the dummy Gmail address -> send verification. Open the dummy inbox and approve the verification link. Only the project owner does this; nobody else needs that account.
-2. Add a file Email.gs in the Apps Script project. Confirm the alias is listed by GmailApp.getAliases() and put that address in SENDER_ALIAS (use the placeholder in files, never the real address).
+1. The project owner has already created the dummy Gmail account and verified the "Send as" alias. Do NOT set up, verify, or log into that account. Take the exact alias string from your handoff brief (the owner gives it to you privately).
+2. Add a file Email.gs in the existing Apps Script project (owned by the project owner). Confirm the alias is available to the script with GmailApp.getAliases(); keep SENDER_ALIAS = "PASTE_LATER" as a placeholder in the repo — never put the real address in a file. Note: SENDER_ALIAS is defined in Member 2's Config.gs, which you do not own; report the exact alias in your handoff note so the owner can fill it in.
 3. Write sendTicketEmail({to, fullName, attendeeId, qrBlob, qrUrl}) -> {sent, error}. Send with GmailApp.sendEmail(to, subject, text, {from: SENDER_ALIAS, htmlBody, inlineImages with key "qr", name, replyTo}).
 4. In the HTML body, reference the inline image using the key "qr". Keep the subject and message in /email/template.html. Include the name and event details — never the ID.
 5. Check MailApp.getRemainingDailyQuota() first; if it is 0 return {sent:false}. Catch errors and return {sent:false, error}.
@@ -221,7 +225,7 @@ STEPS (beginner — where to click)
 If you are not sure about any step or setting, say "I'm not sure" — never invent a function name, setting, or column.
 
 CONSTRAINTS
-Build: the email module and HTML template. Do NOT build: the Form, ID/QR generation, scanner, or Sheet columns. NEVER show the AttendeeID in the email. Quota note: 100 recipients/day (consumer Gmail) or 1,500 (Workspace).
+Own: the email module and HTML template files. Do NOT create or configure the Gmail account/alias, the Form, Sheet, Script container, ID/QR generation, scanner, or Sheet columns — the project owner already did the setup. NEVER show the AttendeeID in the email. Quota note: 100 recipients/day (consumer Gmail) or 1,500 (Workspace).
 
 VERIFY
 A test inbox gets the email quickly with a scannable QR displayed and template-correct subject/content; EmailSent becomes TRUE. A bad address leaves EmailSent FALSE.
@@ -236,10 +240,10 @@ Stop, then send the A2 Report. State the exact function name and its inputs. Do 
 
 ```text
 TASK
-You are Member 4, the Scanner builder. Goal: a phone web page that scans a QR and marks that row checked in. Build the scanner page and the doGet() that serves it.
+You are Member 4, the Scanner builder. Goal: a phone web page that scans a QR and marks that row checked in. Write the scanner page and the doGet() snippet; the project owner deploys the web app after your code is merged.
 
 OWNED FILES
-/scanner/index.html and the /scanner/doGet.gs snippet. Do not create or edit any other file. (The Backend owner copies the snippet into Apps Script.)
+/scanner/index.html and the /scanner/doGet.gs snippet. Do not create or edit any other file. (The Backend owner copies the snippet into the existing Apps Script project.)
 
 CONTEXT (shared contract — do not change)
 Sheet tab: "Registrations". Row 1, columns A-J, exactly: Timestamp | FullName | Email | Organization | Contact | AttendeeID | QRUrl | EmailSent | CheckedIn | CheckInTime.
@@ -248,19 +252,19 @@ AttendeeID: Utilities.getUuid(), lowercase, hyphens removed, plain text in colum
 QR contains ONLY the AttendeeID. No paid services. Nobody changes the columns or the QR format.
 
 STEPS (beginner — where to click)
-1. Add an HTML file in the Apps Script project; in our repo keep it as /scanner/index.html.
+1. Add an HTML file in the existing Apps Script project; in our repo keep it as /scanner/index.html. Do not create a new Script project.
 2. Add doGet() in Apps Script using HtmlService so the web app URL opens the page. Keep the snippet in /scanner/doGet.gs.
-3. Deploy: Deploy -> New deployment -> Web app -> Execute as: Me -> Who has access: Anyone. Copy the URL. (The project owner handles deployment; you provide the snippet.)
+3. Do NOT deploy the web app. The project owner does that after your merge, with Execute as: Me and Who has access: Anyone, so checkIn writes run as the owner. Your deliverable is the snippet plus a one-line note of the exact deployment settings the owner must use.
 4. Open the phone camera with BarcodeDetector. If the browser does not support it, show a clear message to use a supported browser — no paid library.
-5. A scan gives only the AttendeeID. Ask the operator for the shared PIN once per session (keep it in session memory, never in source or URL).
+5. A scan gives only the AttendeeID. Ask the operator for the shared PIN once per session (keep it in session memory, never in source or URL). The PIN is already set in Script Properties by the owner.
 6. Call checkIn(id, pin) through google.script.run. Show success with the name; "Already checked in at <time>" for a duplicate; a clear error for unknown ID, wrong PIN, or no connection. Cache nothing offline.
 If you are not sure about any step or setting, say "I'm not sure" — never invent a function name, setting, or column.
 
 CONSTRAINTS
-Build: the scanner page plus doGet() that serves it. Do NOT build: the Form, ID/QR generation, email, or direct Sheet writes from the page. The page sends ONLY the ID and PIN to checkIn(id, pin). PIN never in source or URL.
+Own: the scanner page and doGet() that serves it. Do NOT create the Form, Sheet, Script container, Gmail alias, Drive folder, trigger, or web app deployment — the project owner already did or will do those. Do NOT build: ID/QR generation, email, or direct Sheet writes from the page. The page sends ONLY the ID and PIN to checkIn(id, pin). PIN never in source or URL.
 
 VERIFY
-Scanning a valid test QR marks the right row CheckedIn=TRUE with a CheckInTime. An unknown/tampered ID is rejected; a duplicate scan shows "already checked in"; no other rows change.
+Scanning a valid test QR marks the right row CheckedIn=TRUE with a CheckInTime. An unknown/tampered ID is rejected; a duplicate scan shows "already checked in"; no other rows change. Note: the web app is not deployed until after merge — if you cannot run this yet, list it as NOT verified.
 
 CHECKPOINT
 Stop, then send the A2 Report. List the function name doGet(). Do not continue to another task.
@@ -285,14 +289,14 @@ QR contains ONLY the AttendeeID. No paid services. Nobody changes the columns or
 
 STEPS (beginner — where to click)
 1. Collect Tasks 1-4 and merge their files into /form, /backend, /email, /scanner without renaming files or changing columns.
-2. Confirm the owner has already: created the Sheet tab "Registrations" with the 10 headers, added everyone as Editors, set SCANNER_PIN in Script Properties, installed the onFormSubmit trigger, deployed the web app (Execute as: Me, Anyone), and shared the QR Drive folder as "Anyone with the link can view". If any is missing, write a finding and stop.
+2. Confirm the owner has already: created the Form and the Sheet tab "Registrations" with the 10 headers, bound the Script project, added everyone as Editors, set SCANNER_PIN in Script Properties, verified the Gmail alias, shared the QR Drive folder as "Anyone with the link can view", installed the onFormSubmit trigger (after the backend merge), and deployed the web app (Execute as: Me, Anyone) after the scanner merge. If any is missing, write a finding and stop.
 3. Run the integration test (Appendix C) with 3 fake registrations: submit 3 test registrations; confirm 3 emails arrive with a working QR; scan all 3; scan one again and confirm "already checked in". Record pass/fail in /docs/TEST_LOG.md, then delete test rows and QR files.
 4. Also check: columns A-E unchanged after check-in, duplicate scan does not overwrite the first CheckInTime, no secrets in files, quota enough for expected attendance.
 5. Write /docs/GO_NO_GO.md with the final decision and any findings.
 If you are not sure about any step or setting, say "I'm not sure" — never invent a function name, setting, or column.
 
 CONSTRAINTS
-Build: file merging, testing, and test logs. Do NOT build application code. Do NOT create or configure the Sheet, Script Properties, triggers, deployments, or Drive sharing — the project owner already did those. If a setup item is missing, report it as a finding; do not fix it yourself.
+Own: file merging, testing, and test logs. Do NOT build application code. Do NOT create or configure the Form, Sheet, Script, Gmail alias, Script Properties, triggers, deployments, or Drive sharing — the project owner already did those. If a setup item is missing, report it as a finding; do not fix it yourself.
 
 VERIFY
 All four stage tests pass and the 3-registration integration test passes, with results recorded in TEST_LOG.md.
