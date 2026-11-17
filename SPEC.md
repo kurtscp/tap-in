@@ -219,6 +219,17 @@ Settings: `SCANNER_PIN` (Apps Script → Project Settings → Script Properties)
 /docs      SPEC.md and supporting docs
 ```
 
+### 7.5 Branding
+
+| Item | Value |
+|---|---|
+| Name | `"<name>"` |
+| Accent color | `<hex>` |
+| Font | `<font>` |
+| Logo file | `<path or "none yet">` |
+
+Scope: the scanner page header + page title, the email template header, and the Form theme. The QR image stays plain — **no logo overlay**. No lockups and no app icons. These are presentation values only; they do not change the data contract, function signatures, settings, or test steps.
+
 ---
 
 ## 8. Non-functional requirements
