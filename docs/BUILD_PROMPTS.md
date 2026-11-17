@@ -75,6 +75,9 @@ PR1. Plan first: state your plan, then wait for the go-ahead before editing file
 PR2. Edit only the files in OWNED FILES, and only within the scope of your one task.
 PR3. Stop at the CHECKPOINT. Do not continue into another task or make unrequested changes.
 PR4. End with the A2 Report format: plan followed, changed files, commands/steps run, Verified (how), NOT verified, rules touched, open questions.
+
+[BRAND — BR]
+BR1. Brand: name "<name>", accent color <hex>, font <font>, logo file <path or "none yet">. Applies only to scanner page header + page title, email template header, and Form theme; QR image stays plain (no logo overlay); no lockups and no app icons.
 ```
 
 ## A2 — Required Report Format
@@ -141,6 +144,7 @@ Sheet tab: "Registrations". Row 1, columns A-J, exactly: Timestamp | FullName | 
 Form questions asked in this order: FullName, Email, Organization, Contact -> responses land in columns B-E; Timestamp is in A.
 AttendeeID: Utilities.getUuid(), lowercase, hyphens removed, plain text in column F. Unique, not guessable, not the email, never Math.random().
 QR contains ONLY the AttendeeID. No paid services. Nobody changes the columns or the QR format.
+Brand: name "<name>", accent color <hex>, font <font>, logo file <path or "none yet">. Applies only to scanner page header + page title, email template header, and Form theme; QR image stays plain (no logo overlay); no lockups and no app icons.
 
 STEPS (beginner — where to click)
 1. Open the existing Form titled "Tap In Registration" (owned by the project owner; you are an Editor). Do not create a new Form.
@@ -176,6 +180,7 @@ Sheet tab: "Registrations". Row 1, columns A-J, exactly: Timestamp | FullName | 
 Form questions asked in this order: FullName, Email, Organization, Contact -> responses land in columns B-E; Timestamp is in A.
 AttendeeID: Utilities.getUuid(), lowercase, hyphens removed, plain text in column F. Unique, not guessable, not the email, never Math.random().
 QR contains ONLY the AttendeeID. No paid services. Nobody changes the columns or the QR format.
+Brand: name "<name>", accent color <hex>, font <font>, logo file <path or "none yet">. Applies only to scanner page header + page title, email template header, and Form theme; QR image stays plain (no logo overlay); no lockups and no app icons.
 
 STEPS (beginner — where to click)
 1. Open the existing Apps Script project from the Sheet: Extensions -> Apps Script. It already exists — do not create a new one. Add files Config.gs and Code.gs in that project.
@@ -214,6 +219,7 @@ Sheet tab: "Registrations". Row 1, columns A-J, exactly: Timestamp | FullName | 
 Form questions asked in this order: FullName, Email, Organization, Contact -> responses land in columns B-E; Timestamp is in A.
 AttendeeID: Utilities.getUuid(), lowercase, hyphens removed, plain text in column F. Unique, not guessable, not the email, never Math.random().
 QR contains ONLY the AttendeeID. No paid services. Nobody changes the columns or the QR format.
+Brand: name "<name>", accent color <hex>, font <font>, logo file <path or "none yet">. Applies only to scanner page header + page title, email template header, and Form theme; QR image stays plain (no logo overlay); no lockups and no app icons.
 
 STEPS (beginner — where to click)
 1. The project owner has already created the dummy Gmail account and verified the "Send as" alias. Do NOT set up, verify, or log into that account. Take the exact alias string from your handoff brief (the owner gives it to you privately).
@@ -250,6 +256,7 @@ Sheet tab: "Registrations". Row 1, columns A-J, exactly: Timestamp | FullName | 
 Form questions asked in this order: FullName, Email, Organization, Contact -> responses land in columns B-E; Timestamp is in A.
 AttendeeID: Utilities.getUuid(), lowercase, hyphens removed, plain text in column F. Unique, not guessable, not the email, never Math.random().
 QR contains ONLY the AttendeeID. No paid services. Nobody changes the columns or the QR format.
+Brand: name "<name>", accent color <hex>, font <font>, logo file <path or "none yet">. Applies only to scanner page header + page title, email template header, and Form theme; QR image stays plain (no logo overlay); no lockups and no app icons.
 
 STEPS (beginner — where to click)
 1. Add an HTML file in the existing Apps Script project; in our repo keep it as /scanner/index.html. Do not create a new Script project.
@@ -286,6 +293,7 @@ Sheet tab: "Registrations". Row 1, columns A-J, exactly: Timestamp | FullName | 
 Form questions asked in this order: FullName, Email, Organization, Contact -> responses land in columns B-E; Timestamp is in A.
 AttendeeID: Utilities.getUuid(), lowercase, hyphens removed, plain text in column F. Unique, not guessable, not the email, never Math.random().
 QR contains ONLY the AttendeeID. No paid services. Nobody changes the columns or the QR format.
+Brand: name "<name>", accent color <hex>, font <font>, logo file <path or "none yet">. Applies only to scanner page header + page title, email template header, and Form theme; QR image stays plain (no logo overlay); no lockups and no app icons.
 
 STEPS (beginner — where to click)
 1. Collect Tasks 1-4 and merge their files into /form, /backend, /email, /scanner without renaming files or changing columns.
@@ -391,6 +399,7 @@ Form questions asked in this order: FullName, Email, Organization, Contact -> re
 AttendeeID: generated with Utilities.getUuid(), lowercase, hyphens removed, plain text in column F. Unique, not guessable, not the email, never Math.random().
 QR code contains ONLY the AttendeeID — nothing else, ever.
 No paid services. Nobody changes the columns or the QR format.
+Brand: name "<name>", accent color <hex>, font <font>, logo file <path or "none yet">. Applies only to scanner page header + page title, email template header, and Form theme; QR image stays plain (no logo overlay); no lockups and no app icons.
 ```
 
 Function names and signatures (exact, do not rename or reshape):
