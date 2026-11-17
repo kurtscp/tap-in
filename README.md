@@ -76,11 +76,11 @@ git push -u origin feature/task-1-form    # publish your branch for review
 
 | Order | Task | Member | Folder | Branch name |
 |---|---|---|---|---|
-| 1 | Registration Form | Member 1 | `/form` | `feature/task-1-form` |
-| 2 | Backend: ID + QR | Member 2 | `/backend` | `feature/task-2-backend` |
-| 3 | Email | Member 3 | `/email` | `feature/task-3-email` |
-| 4 | Scanner | Member 4 | `/scanner` | `feature/task-4-scanner` |
-| 5 | Lead/QA | Member 5 | `/docs` | `feature/task-5-qa` |
+| 1 | Registration Form | JM (M1) | `/form` | `feature/task-1-form` |
+| 2 | Backend: ID + QR | Ching (M2) | `/backend` | `feature/task-2-backend` |
+| 3 | Email | Chezter (M3) | `/email` | `feature/task-3-email` |
+| 4 | Scanner | Ali (M4) | `/scanner` | `feature/task-4-scanner` |
+| 5 | Lead/QA | Kurt (M5) | `/docs` | `feature/task-5-qa` |
 
 **Merge order:** Form → Backend → Email → Scanner → QA.
 
