@@ -223,12 +223,12 @@ Settings: `SCANNER_PIN` (Apps Script → Project Settings → Script Properties)
 
 | Item | Value |
 |---|---|
-| Name | `"<name>"` |
-| Accent color | `<hex>` |
-| Font | `<font>` |
-| Logo file | `<path or "none yet">` |
+| Name | "Tap In" |
+| Accent color | `#4F46E5` |
+| Font | Montserrat |
+| Logo file | "none yet" |
 
-Scope: the scanner page header + page title, the email template header, and the Form theme. The QR image stays plain — **no logo overlay**. No lockups and no app icons. These are presentation values only; they do not change the data contract, function signatures, settings, or test steps.
+Scope: the scanner page header + page title, the email template header, and the Form theme. The QR image stays plain — **no logo overlay**. No lockups and no app icons. Until a logo file exists, use a plain text wordmark "Tap In" in the accent color — no substitute icon. These are presentation values only; they do not change the data contract, function signatures, settings, or test steps.
 
 ---
 
