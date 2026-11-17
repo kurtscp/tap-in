@@ -61,11 +61,12 @@ The few commands you actually need:
 git clone <repo-url>                      # get a local copy of the repo
 cd tap-in                                 # enter the repo
 git checkout -b feature/task-1-form       # create your task branch (use your own)
-git status                                # see what you changed
 git add .                                 # stage all changed files
 git commit -m "Task 1: Registration Form" # save your work locally
-git pull --rebase origin main             # stay current before pushing
 git push -u origin feature/task-1-form    # publish your branch for review
+
+git checkout main
+git pull origin main             # stay current before pushing
 ```
 
 `main` is protected: members push their own branches and open a PR. Only the team lead merges into `main`.
