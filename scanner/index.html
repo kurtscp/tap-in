@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tap In – Check In</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --accent: #4F46E5;
+      --accent-dark: #4338CA;
+      --bg: #F4F5F7;
+      --card: #FFFFFF;
+      --text: #111827;
+      --muted: #6B7280;
+      --border: #E5E7EB;
+      --ok-bg: #ECFDF5;
+      --ok-border: #10B981;
+      --ok-text: #065F46;
+      --warn-bg: #FFFBEB;
+      --warn-border: #F59E0B;
+      --warn-text: #92400E;
+      --err-bg: #FEF2F2;
+      --err-border: #EF4444;
+      --err-text: #991B1B;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      width: 100%;
+      background: var(--accent);
+      color: #fff;
+      padding: 18px 16px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    header p {
+      font-size: 0.8rem;
+      font-weight: 500;
+      opacity: 0.85;
+      margin-top: 2px;
+    }
+
+    main {
+      width: 100%;
+      max-width: 480px;
+      padding: 16px;
+      flex: 1;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    #camera-frame {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: #111;
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    #scan-overlay {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #scan-overlay .reticle {
+      width: 65%;
+      height: 65%;
+      border: 3px solid rgba(255,255,255,0.9);
+      border-radius: 16px;
+      box-shadow: 0 0 0 9999px rgba(0,0,0,0.35);
+    }
+
+    .status-line {
+      margin-top: 12px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      text-align: center;
+      min-height: 1.2em;
+    }
+
+    button {
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 1rem;
+      border: none;
+      border-radius: 10px;
+      padding: 14px 24px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    button:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:not(:disabled):active { background: var(--accent-dark); }
+
+    #result {
+      display: none;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      border: 2px solid;
+      text-align: center;
+    }
+
+    #result.ok     { background: var(--ok-bg);   border-color: var(--ok-border);   color: var(--ok-text); }
+    #result.warn   { background: var(--warn-bg); border-color: var(--warn-border); color: var(--warn-text); }
+    #result.error  { background: var(--err-bg);  border-color: var(--err-border);  color: var(--err-text); }
+
+    #result .icon { font-size: 2rem; line-height: 1; }
+    #result .title { font-weight: 700; font-size: 1.1rem; margin-top: 6px; }
+    #result .detail { font-weight: 500; font-size: 0.9rem; margin-top: 4px; }
+
+    #pin-card { display: none; }
+    #pin-card p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    #pin-input {
+      font-family: inherit;
+      font-size: 1.2rem;
+      text-align: center;
+      letter-spacing: 0.3em;
+      padding: 12px;
+      border: 2px solid var(--accent);
+      border-radius: 10px;
+      width: 100%;
+      margin-bottom: 12px;
+      outline: none;
+    }
+
+    #unsupported {
+      display: none;
+      background: var(--err-bg);
+      border: 2px solid var(--err-border);
+      color: var(--err-text);
+      border-radius: 12px;
+      padding: 20px 16px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    footer {
+      padding: 12px;
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Tap In</h1>
+    <p>Attendee Check-In Scanner</p>
+  </header>
+
+  <main>
+    <!-- Unsupported browser message -->
+    <section id="unsupported" role="alert">
+      <strong>Browser not supported</strong><br><br>
+      This scanner requires a browser with built-in QR detection
+      (BarcodeDetector API).<br><br>
+      Please open this page on an up-to-date
+      <strong>Chrome or Edge on Android</strong>
+      (also works in Safari on recent iOS versions).
+    </section>
+
+    <!-- PIN entry -->
+    <section id="pin-card" class="card">
+      <p>Enter the operator PIN to unlock the scanner for this session.</p>
+      <input id="pin-input" type="password" inputmode="numeric" autocomplete="off" placeholder="PIN">
+      <button id="pin-submit" class="btn-primary" type="button">Unlock Scanner</button>
+    </section>
+
+    <!-- Result banner -->
+    <section id="result" role="status">
+      <div class="icon" id="result-icon"></div>
+      <div class="title" id="result-title"></div>
+      <div class="detail" id="result-detail"></div>
+    </section>
+
+    <!-- Camera -->
+    <section id="scan-card" class="card">
+      <div id="camera-frame">
+        <video id="video" playsinline muted></video>
+        <div id="scan-overlay"><div class="reticle"></div></div>
+      </div>
+      <div class="status-line" id="scan-status">Starting camera…</div>
+      <button id="rescan" class="btn-primary" type="button" style="margin-top:12px;">Scan Next Attendee</button>
+    </section>
+  </main>
+
+  <footer>Tap In · Point the camera at an attendee's QR code to check them in.</footer>
+
+  <script>
+    'use strict';
+
+    // ------------------------------------------------------------------
+    // State
+    // ------------------------------------------------------------------
+    var PIN_KEY = 'tapin_scanner_pin';   // sessionStorage only — gone when tab closes
+    var scannerPin = null;               // in-memory for this session
+    var video = null;
+    var stream = null;
+    var detector = null;
+    var scanning = false;                // true while the scan loop is running
+    var processing = false;              // true while a scan result is being checked in
+
+    // ------------------------------------------------------------------
+    // Utilities
+    // ------------------------------------------------------------------
+    function show(id)   { document.getElementById(id).style.display = 'block'; }
+    function hide(id)   { document.getElementById(id).style.display = 'none'; }
+    function setStatus(msg) {
+      document.getElementById('scan-status').textContent = msg;
+    }
+
+    function showResult(kind, icon, title, detail) {
+      var box = document.getElementById('result');
+      box.className = kind;  // ok | warn | error
+      document.getElementById('result-icon').textContent = icon;
+      document.getElementById('result-title').textContent = title;
+      document.getElementById('result-detail').textContent = detail || '';
+      box.style.display = 'block';
+    }
+
+    function hideResult() {
+      document.getElementById('result').style.display = 'none';
+    }
+
+    // ------------------------------------------------------------------
+    // PIN gate
+    // ------------------------------------------------------------------
+    function loadSessionPin() {
+      try {
+        var v = sessionStorage.getItem(PIN_KEY);
+        if (v) { scannerPin = v; return true; }
+      } catch (e) { /* sessionStorage unavailable — fall through */ }
+      return false;
+    }
+
+    function saveSessionPin(pin) {
+      try { sessionStorage.setItem(PIN_KEY, pin); } catch (e) { /* ignore */ }
+      scannerPin = pin;
+    }
+
+    function clearPin() {
+      try { sessionStorage.removeItem(PIN_KEY); } catch (e) { /* ignore */ }
+      scannerPin = null;
+    }
+
+    function promptForPin(reason) {
+      stopCamera();
+      hideResult();
+      show('pin-card');
+      var input = document.getElementById('pin-input');
+      if (reason) {
+        document.querySelector('#pin-card p').textContent = reason;
+      } else {
+        document.querySelector('#pin-card p').textContent =
+          'Enter the operator PIN to unlock the scanner for this session.';
+      }
+      input.value = '';
+      input.focus();
+    }
+
+    // ------------------------------------------------------------------
+    // Camera + BarcodeDetector
+    // ------------------------------------------------------------------
+    function supportsBarcodeDetector() {
+      return typeof window.BarcodeDetector === 'function';
+    }
+
+    async function startCamera() {
+      hide('pin-card');
+      hideResult();
+      if (!supportsBarcodeDetector()) {
+        hide('scan-card');
+        show('unsupported');
+        return;
+      }
+
+      if (!loadSessionPin()) {
+        promptForPin(null);
+        return;
+      }
+
+      try {
+        detector = await new BarcodeDetector({ formats: ['qr_code'] });
+      } catch (err) {
+        hide('scan-card');
+        show('unsupported');
+        return;
+      }
+
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        showResult('error', '✕', 'Camera unavailable',
+          'This browser cannot access the camera.');
+        return;
+      }
+
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } },
+          audio: false
+        });
+      } catch (err) {
+        showResult('error', '✕', 'Camera access denied',
+          'Allow camera access in the browser, then tap "Scan Next Attendee".');
+        return;
+      }
+
+      video = document.getElementById('video');
+      video.srcObject = stream;
+      await video.play();
+      setStatus('Point the camera at a QR code…');
+      scanning = true;
+      processLoop();
+    }
+
+    async function processLoop() {
+      if (!scanning) return;
+      if (document.hidden) { requestAnimationFrame(processLoop); return; }
+
+      if (!processing && video && video.readyState >= 2) {
+        try {
+          var codes = await detector.detect(video);
+          if (codes && codes.length > 0) {
+            var raw = codes[0].rawValue;
+            if (raw && String(raw).trim() !== '') {
+              handleScan(String(raw).trim());
+              return;  // stop the loop; "Scan Next" restarts it
+            }
+          }
+        } catch (err) { /* transient detect error — keep scanning */ }
+      }
+      requestAnimationFrame(processLoop);
+    }
+
+    function stopCamera() {
+      scanning = false;
+      if (stream) {
+        stream.getTracks().forEach(function (t) { t.stop(); });
+        stream = null;
+      }
+    }
+
+    // ------------------------------------------------------------------
+    // Scan handling — sends ONLY (id, pin) to the server
+    // ------------------------------------------------------------------
+    function handleScan(id) {
+      processing = true;
+      stopCameraLoopOnly();
+      setStatus('Checking in…');
+      hideResult();
+
+      google.script.run
+        .withSuccessHandler(onCheckInSuccess)
+        .withFailureHandler(onCheckInFailure)
+        .checkIn(id, scannerPin);
+    }
+
+    function stopCameraLoopOnly() {
+      scanning = false;
+    }
+
+    function onCheckInSuccess(res) {
+      processing = false;
+      if (!res) {
+        showResult('error', '✕', 'Unexpected server response', '');
+        setStatus('Tap "Scan Next Attendee" to continue.');
+        return;
+      }
+
+      switch (res.status) {
+        case 'checked_in':
+          showResult('ok', '✓', 'Checked in',
+            (res.fullName || 'Attendee') + (res.checkInTime ? ' · ' + res.checkInTime : ''));
+          setStatus('Checked in. Tap "Scan Next Attendee" for the next person.');
+          break;
+
+        case 'already_checked_in':
+          showResult('warn', '⏱', 'Already checked in',
+            (res.fullName || 'Attendee') + ' was checked in at ' +
+            (res.checkInTime || 'an earlier time'));
+          setStatus('Duplicate scan. Tap "Scan Next Attendee" to continue.');
+          break;
+
+        case 'invalid_pin':
+          showResult('error', '🔒', 'Wrong PIN', 'Enter the correct operator PIN.');
+          clearPin();
+          setStatus('PIN cleared.');
+          promptForPin('That PIN was rejected. Enter the correct operator PIN.');
+          return;
+
+        case 'not_found':
+        case 'invalid_id':
+          showResult('error', '✕', 'Unknown attendee',
+            'No registration matches this QR code. Verify the code and try again.');
+          setStatus('Unknown ID. Tap "Scan Next Attendee" to retry.');
+          break;
+
+        default:
+          showResult('error', '✕', 'Check-in failed',
+            res.message || 'Unknown error.');
+          setStatus('Tap "Scan Next Attendee" to continue.');
+      }
+    }
+
+    function onCheckInFailure(err) {
+      processing = false;
+      showResult('error', '✕', 'Connection error',
+        'Could not reach the server. Check your internet connection, then tap ' +
+        '"Scan Next Attendee" to retry.');
+      setStatus('Offline or server unreachable.');
+    }
+
+    // ------------------------------------------------------------------
+    // Wiring
+    // ------------------------------------------------------------------
+    document.getElementById('pin-submit').addEventListener('click', function () {
+      var pin = document.getElementById('pin-input').value;
+      if (!pin) {
+        document.getElementById('pin-input').focus();
+        return;
+      }
+      saveSessionPin(pin);
+      hide('pin-card');
+      startCamera();
+    });
+
+    document.getElementById('pin-input').addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') {
+        document.getElementById('pin-submit').click();
+      }
+    });
+
+    document.getElementById('rescan').addEventListener('click', function () {
+      hideResult();
+      processing = false;
+      startCamera();
+    });
+
+    // Boot
+    if (!supportsBarcodeDetector()) {
+      hide('scan-card');
+      show('unsupported');
+    } else if (loadSessionPin()) {
+      startCamera();
+    } else {
+      promptForPin(null);
+    }
+  </script>
+</body>
+</html>
